@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 
 public
 class WebViewSupportFragment
@@ -13,9 +14,10 @@ class WebViewSupportFragment
 {
 	// private variables
 	// constants
+	private static final String KEY_URL = "url";
 	private final String TAG = this.getClass().getSimpleName();
 	// model variables
-	private String currentURL;
+	private String mURL;
 	// view variables
 
 	// public methods
@@ -42,6 +44,16 @@ class WebViewSupportFragment
 		super.onCreate( savedInstanceState );
 	}
 
+	@Override
+	public
+	void onActivityCreated(
+		@Nullable
+			Bundle savedInstanceState
+								 )
+	{
+		super.onActivityCreated( savedInstanceState );
+	}
+
 	@Nullable
 	@Override
 	public
@@ -59,13 +71,33 @@ class WebViewSupportFragment
 				container,
 				false
 								 );
+		if( mURL != null)
+		{
+			WebView
+				webview = (WebView)
+				view.findViewById( R.id.fragment_web_wv_embedded );
+			// configure settings
+			webview.setWebViewClient(
+				new EmbeddedWebViewClient()
+											);
+			webview.loadUrl( mURL );
+		}
 		// attach listeners and initialize ui
 
 		return view;
 	}
 
-	public void init()
+	@Override
+	public
+	void onSaveInstanceState( Bundle outState )
 	{
+		super.onSaveInstanceState( outState );
+		outState.putString( KEY_URL, mURL );
+	}
 
+	public void setURLContent(String URL)
+	{
+		// should add check for null and empty string
+		mURL = URL;
 	}
 }
